@@ -1,7 +1,10 @@
 from datetime import datetime
+from os.path import isfile
+
 import alpaca_trade_api as tradeapi
 from openpyxl import Workbook, load_workbook
 # https://realpython.com/python-send-email/
+# Add today's change to array
 api = tradeapi.REST()
 structure = [["", "", "", "", ""], ["Date", datetime.now().strftime("%A"), datetime.now().strftime("%Y-%m-%d"), 'Time:', datetime.now().strftime("%H:%M")], ['Stock', 'IdealQuant', 'AlpacaVol', 'NowPrice', 'Value']]
 portfolio = [['ZM', 10, 0, 0, 0], ['FLIR', 250, 0, 0, 0], ['FVRR', 200, 0, 0, 0], ['Z', 3, 0, 0, 0], ['GLD', 12, 0, 0, 0], ['TMO', 32, 0, 0, 0], ['GILD', 20, 0, 0, 0],
@@ -17,7 +20,10 @@ def curr_price(stock):
 
 
 def report_wouldbe():
-    workbook = load_workbook(filename="reporting.xlsx")
+    if isfile("reporting.xlsx"):
+        workbook = load_workbook(filename="reporting.xlsx")
+    else:
+        workbook = Workbook()
     sheet = workbook.active
     for index in structure:
         sheet.append(index)
@@ -30,6 +36,7 @@ def report_wouldbe():
     print("Current Would-Be Value: " + str(round(sumPortfolio[0][4], 2)))
     sheet.append(sumPortfolio[0])
     workbook.save(filename="reporting.xlsx")
+
 
 
 def update_positions():
